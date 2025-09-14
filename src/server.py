@@ -31,7 +31,7 @@ def jolt_user_id(
     """
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
     headers = {"Authorization": f"Bearer {os.getenv(bearerToken,'')}"}
-    return requests.get(f"{base}/v1/user", params={"user": userHandle}, headers=headers, timeout=10).json()
+    return requests.get(f"{base}/v1/email", headers=headers, timeout=10).json()
 
 # @mcp.tool
 # def fitness_start_plan(
