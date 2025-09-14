@@ -383,7 +383,8 @@ if __name__ == "__main__":
         mcp.run(
             transport="http",
             host=host,
-            port=port
+            port=port,
+            stateless_http=True
         )
     except Exception as e:
         print(f"Failed to start MCP server: {str(e)}")
