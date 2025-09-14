@@ -42,26 +42,22 @@ def fitness_start_plan(
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
     headers = {"Authorization": f"Bearer {os.getenv('FITNESS_API_KEY','')}"}
 
-    runs  = requests.get(f"{base}/runs",  params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
-    meals = requests.get(f"{base}/meals", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
+    email  = requests.get(f"{base}/v1/email",  params={"user": userHandle, "window": "90d"}, timeout=10).json()
+    # meals = requests.get(f"{base}/v1/email", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
 
     # toy logic for a preview
-    weekly_miles = sum(r.get("miles", 0) for r in runs[-7:])
-    protein_avg  = round(sum(m.get("protein_g", 0) for m in meals[-7:]) / max(1, len(meals[-7:]))) if meals else 0
+    # weekly_miles = sum(r.get("miles", 0) for r in runs[-7:])
+    # protein_avg  = round(sum(m.get("protein_g", 0) for m in meals[-7:]) / max(1, len(meals[-7:]))) if meals else 0
 
-    plan_md = (
-        "### Week 1 (Base)\n"
-        f"- 3 easy runs: 20–30 min (RPE 3–4); last-week miles≈{weekly_miles:.1f}\n"
-        "- 1 cross day: 30 min cycling or brisk walk\n"
-        f"- Protein target: ~{protein_avg} g/day\n"
-        + (f"\n**Goal:** {goal}\n" if goal else "")
-    )
+    # plan_md = (
+    #     "### Week 1 (Base)\n"
+    #     f"- 3 easy runs: 20–30 min (RPE 3–4);\n"
+    #     "- 1 cross day: 30 min cycling or brisk walk\n"
+    #     f"- Protein target: PROTIEN g/day\n"
+    #     + (f"\n**Goal:** {goal}\n" if goal else "")
+    # )
 
-    return {
-        "planPreviewMd": plan_md,
-        "nextAction": "Confirm plan & sync calendar?",
-        "debug": {"source": base, "usedData": "last_90_days"}
-    }
+    return email
 
 @mcp.tool
 def whoami_link_account(pokeUserId: str, siteUserHandle: str):
