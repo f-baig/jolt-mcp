@@ -22,42 +22,54 @@ mcp = FastMCP("jolt-mcp")
 #     }
 
 @mcp.tool
-def fitness_start_plan(
+def jolt_user_id(
     userHandle: str,
-    goal: str | None = None,
-    startDate: str | None = None,
+    bearerToken: str,
 ):
     """
-    Start a personalized fitness plan using OurSite run + meal data.
-    Use when the user says things like:
-    - "start a fitness plan", "make me a training plan", "new fitness program"
-    - "meal + run plan", "set up a running plan"
-    Inputs:
-      - userHandle: the user's handle/ID on OurSite
-      - goal (optional): e.g. "5K in 6 weeks", "lose 5 lb"
-      - startDate (optional): ISO date (YYYY-MM-DD)
-    Output: { planPreviewMd, nextAction, debug }
+    Get information about the user's jolt ID.
     """
-    # Fetch from your website’s API (replace base + auth as needed)
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
-    headers = {"Authorization": f"Bearer {os.getenv('FITNESS_API_KEY','')}"}
+    headers = {"Authorization": f"Bearer {os.getenv(bearerToken,'')}"}
+    return requests.get(f"{base}/v1/user", params={"user": userHandle}, headers=headers, timeout=10).json()
 
-    email  = requests.get(f"{base}/v1/email",  params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
-    # meals = requests.get(f"{base}/v1/email", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
+# @mcp.tool
+# def fitness_start_plan(
+#     userHandle: str,
+#     goal: str | None = None,
+#     startDate: str | None = None,
+# ):
+#     """
+#     Start a personalized fitness plan using OurSite run + meal data.
+#     Use when the user says things like:
+#     - "start a fitness plan", "make me a training plan", "new fitness program"
+#     - "meal + run plan", "set up a running plan"
+#     Inputs:
+#       - userHandle: the user's handle/ID on OurSite
+#       - goal (optional): e.g. "5K in 6 weeks", "lose 5 lb"
+#       - startDate (optional): ISO date (YYYY-MM-DD)
+#     Output: { planPreviewMd, nextAction, debug }
+#     """
+#     # Fetch from your website’s API (replace base + auth as needed)
+#     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
+#     headers = {"Authorization": f"Bearer {os.getenv('FITNESS_API_KEY','')}"}
 
-    # toy logic for a preview
-    # weekly_miles = sum(r.get("miles", 0) for r in runs[-7:])
-    # protein_avg  = round(sum(m.get("protein_g", 0) for m in meals[-7:]) / max(1, len(meals[-7:]))) if meals else 0
+#     email  = requests.get(f"{base}/v1/email",  params={"user": "nr10+n1@williams.edu", "window": "90d"}, headers=headers, timeout=10).json()
+#     # meals = requests.get(f"{base}/v1/email", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
 
-    # plan_md = (
-    #     "### Week 1 (Base)\n"
-    #     f"- 3 easy runs: 20–30 min (RPE 3–4);\n"
-    #     "- 1 cross day: 30 min cycling or brisk walk\n"
-    #     f"- Protein target: PROTIEN g/day\n"
-    #     + (f"\n**Goal:** {goal}\n" if goal else "")
-    # )
+#     # toy logic for a preview
+#     # weekly_miles = sum(r.get("miles", 0) for r in runs[-7:])
+#     # protein_avg  = round(sum(m.get("protein_g", 0) for m in meals[-7:]) / max(1, len(meals[-7:]))) if meals else 0
 
-    return email
+#     # plan_md = (
+#     #     "### Week 1 (Base)\n"
+#     #     f"- 3 easy runs: 20–30 min (RPE 3–4);\n"
+#     #     "- 1 cross day: 30 min cycling or brisk walk\n"
+#     #     f"- Protein target: PROTIEN g/day\n"
+#     #     + (f"\n**Goal:** {goal}\n" if goal else "")
+#     # )
+
+#     return email
 
 @mcp.tool
 def whoami_link_account(pokeUserId: str, siteUserHandle: str):
