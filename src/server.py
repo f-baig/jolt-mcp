@@ -78,7 +78,13 @@ def whoami_link_account(pokeUserId: str, siteUserHandle: str):
 
 
 if __name__ == "__main__":
-    host = os.getenv("MCP_HOST", "0.0.0.0")
-    port = int(os.getenv("MCP_PORT", "8000"))
-    path = os.getenv("MCP_PATH", "/mcp")
-    mcp.run(transport="http", host=host, port=port, path=path)
+        port = int(os.environ.get("PORT", 8000))
+    host = "0.0.0.0"
+    
+    print(f"Starting FastMCP server on {host}:{port}")
+    
+    mcp.run(
+        transport="http",
+        host=host,
+        port=port
+    )
