@@ -21,40 +21,44 @@ mcp = FastMCP("jolt-mcp")
 #         "python_version": os.sys.version.split()[0]
 #     }
 
-@mcp.tool
-def jolt_user_id(bearerToken: str):
-    """
-    Get information about the user's jolt ID.
-    """
-    print(f"jolt_user_id called with bearerToken: {bearerToken[:10]}...")
+@mcp.tool(description="Greet a user by name with a welcome message from the MCP server")
+def greet(name: str) -> str:
+    return f"Hello, {name}! Welcome to our sample MCP server running on Heroku!"
+
+# @mcp.tool
+# def jolt_user_id(bearerToken: str):
+#     """
+#     Get information about the user's jolt ID.
+#     """
+#     print(f"jolt_user_id called with bearerToken: {bearerToken[:10]}...")
     
-    base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
-    print(f"Using API base URL: {base}")
+#     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
+#     print(f"Using API base URL: {base}")
     
-    headers = {"Authorization": f"Bearer {bearerToken}"}
-    print(f"Making request to {base}/v1/email")
+#     headers = {"Authorization": f"Bearer {bearerToken}"}
+#     print(f"Making request to {base}/v1/email")
     
-    try:
-        response = requests.get(f"{base}/v1/email", headers=headers, timeout=10)
-        print(f"API response status: {response.status_code}")
+#     try:
+#         response = requests.get(f"{base}/v1/email", headers=headers, timeout=10)
+#         print(f"API response status: {response.status_code}")
         
-        if response.status_code == 200:
-            data = response.json()
-            print(f"Successfully retrieved email data, response size: {len(str(data))} chars")
-            return data
-        else:
-            print(f"API request failed with status {response.status_code}: {response.text}")
-            return {"error": f"API request failed with status {response.status_code}", "details": response.text}
+#         if response.status_code == 200:
+#             data = response.json()
+#             print(f"Successfully retrieved email data, response size: {len(str(data))} chars")
+#             return data
+#         else:
+#             print(f"API request failed with status {response.status_code}: {response.text}")
+#             return {"error": f"API request failed with status {response.status_code}", "details": response.text}
             
-    except requests.exceptions.Timeout:
-        print("API request timed out after 10 seconds")
-        return {"error": "Request timed out"}
-    except requests.exceptions.RequestException as e:
-        print(f"API request failed with exception: {str(e)}")
-        return {"error": f"Request failed: {str(e)}"}
-    except Exception as e:
-        print(f"Unexpected error in jolt_user_id: {str(e)}")
-        return {"error": f"Unexpected error: {str(e)}"}
+#     except requests.exceptions.Timeout:
+#         print("API request timed out after 10 seconds")
+#         return {"error": "Request timed out"}
+#     except requests.exceptions.RequestException as e:
+#         print(f"API request failed with exception: {str(e)}")
+#         return {"error": f"Request failed: {str(e)}"}
+#     except Exception as e:
+#         print(f"Unexpected error in jolt_user_id: {str(e)}")
+#         return {"error": f"Unexpected error: {str(e)}"}
 
 # @mcp.tool
 # def fitness_start_plan(
