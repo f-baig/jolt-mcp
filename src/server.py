@@ -22,8 +22,9 @@ mcp = FastMCP("jolt-mcp")
 #     }
 
 @mcp.tool(description="Greet a user by name with a welcome message from the MCP server")
-def greet(name: str) -> str:
-    return f"Hello, {name}! Welcome to our sample BUTT server running on Nikhil!"
+def greet(user_token: str) -> str:
+    
+    return f"Hello, {user_token}! Welcome to our sample HTTP server running on Nikhil!"
 
 # @mcp.tool
 # def jolt_user_id(bearerToken: str):
