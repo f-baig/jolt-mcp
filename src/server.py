@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
 import os
 import requests
-import logging
 from fastmcp import FastMCP
 
 from dotenv import load_dotenv
 load_dotenv()
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-logger = logging.getLogger(__name__)
 
 mcp = FastMCP("jolt-mcp")
 
@@ -31,15 +22,39 @@ mcp = FastMCP("jolt-mcp")
 #     }
 
 @mcp.tool
-def jolt_user_id(
-    bearerToken: str,
-):
+def jolt_user_id(bearerToken: str):
     """
     Get information about the user's jolt ID.
     """
+    print(f"jolt_user_id called with bearerToken: {bearerToken[:10]}...")
+    
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
+    print(f"Using API base URL: {base}")
+    
     headers = {"Authorization": f"Bearer {bearerToken}"}
-    return requests.get(f"{base}/v1/email", headers=headers, timeout=10).json()
+    print(f"Making request to {base}/v1/email")
+    
+    try:
+        response = requests.get(f"{base}/v1/email", headers=headers, timeout=10)
+        print(f"API response status: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"Successfully retrieved email data, response size: {len(str(data))} chars")
+            return data
+        else:
+            print(f"API request failed with status {response.status_code}: {response.text}")
+            return {"error": f"API request failed with status {response.status_code}", "details": response.text}
+            
+    except requests.exceptions.Timeout:
+        print("API request timed out after 10 seconds")
+        return {"error": "Request timed out"}
+    except requests.exceptions.RequestException as e:
+        print(f"API request failed with exception: {str(e)}")
+        return {"error": f"Request failed: {str(e)}"}
+    except Exception as e:
+        print(f"Unexpected error in jolt_user_id: {str(e)}")
+        return {"error": f"Unexpected error: {str(e)}"}
 
 # @mcp.tool
 # def fitness_start_plan(
@@ -79,17 +94,21 @@ def jolt_user_id(
 
 #     return email
 
-# @mcp.tool
-# def whoami_link_account(pokeUserId: str, siteUserHandle: str):
-    # """
-    # Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
-    # Use when user says: "link my account", "use my site profile", etc.
-    # Inputs:
-    #   - pokeUserId: Poke's stable user identifier
-    #   - siteUserHandle: user's handle on OurSite
-    # """
-    # # Store mapping in your DB; here we simulate success
-    # return {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
+@mcp.tool
+def whoami_link_account(pokeUserId: str, siteUserHandle: str):
+    """
+    Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
+    Use when user says: "link my account", "use my site profile", etc.
+    Inputs:
+      - pokeUserId: Poke's stable user identifier
+      - siteUserHandle: user's handle on OurSite
+    """
+    print(f"whoami_link_account called - pokeUserId: {pokeUserId}, siteUserHandle: {siteUserHandle}")
+    
+    # Store mapping in your DB; here we simulate success
+    result = {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
+    print(f"Account linking successful: {result['msg']}")
+    return result
 
 
 
