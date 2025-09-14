@@ -1,133 +1,58 @@
 #!/usr/bin/env python3
 import os
-import requests
+import sys
+import json
+import logging
 from fastmcp import FastMCP
-
 from dotenv import load_dotenv
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 load_dotenv()
 
 mcp = FastMCP("jolt-mcp")
 
-# @mcp.tool(description="Greet a user by name with a welcome message from the MCP server")
-# def greet(name: str) -> str:
-#     return f"Hello, {name}! Welcome to our sample MCP server running on Heroku!"
-
-# @mcp.tool(description="Get information about the MCP server including name, version, environment, and Python version")
-# def get_server_info() -> dict:
-#     return {
-#         "server_name": "Sample MCP Server",
-#         "version": "1.0.0",
-#         "environment": os.environ.get("ENVIRONMENT", "development"),
-#         "python_version": os.sys.version.split()[0]
-#     }
-
 @mcp.tool(description="Print out a users api token.")
 def print_token(user_api_token: str) -> str:
-    return f"Hello, {user_api_token}! This is your api token!"
-    
+    """Print out a user's API token."""
+    try:
+        if not user_api_token:
+            return "Error: API token is required"
+        return f"Hello, {user_api_token}! This is your api token!"
+    except Exception as e:
+        logger.error(f"Error in print_token: {e}")
+        return f"Error processing token: {str(e)}"
+
 @mcp.tool(description="Print out a users name.")
 def print_name(name: str) -> str:
-    return f"Hello, {name}! Welcome to our sample HTTP server running on Nikhil!"
-
-
-# @mcp.tool
-# def jolt_user_id(bearerToken: str):
-#     """
-#     Get information about the user's jolt ID.
-#     """
-#     print(f"jolt_user_id called with bearerToken: {bearerToken[:10]}...")
-    
-#     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
-#     print(f"Using API base URL: {base}")
-    
-#     headers = {"Authorization": f"Bearer {bearerToken}"}
-#     print(f"Making request to {base}/v1/email")
-    
-#     try:
-#         response = requests.get(f"{base}/v1/email", headers=headers, timeout=10)
-#         print(f"API response status: {response.status_code}")
-        
-#         if response.status_code == 200:
-#             data = response.json()
-#             print(f"Successfully retrieved email data, response size: {len(str(data))} chars")
-#             return data
-#         else:
-#             print(f"API request failed with status {response.status_code}: {response.text}")
-#             return {"error": f"API request failed with status {response.status_code}", "details": response.text}
-            
-#     except requests.exceptions.Timeout:
-#         print("API request timed out after 10 seconds")
-#         return {"error": "Request timed out"}
-#     except requests.exceptions.RequestException as e:
-#         print(f"API request failed with exception: {str(e)}")
-#         return {"error": f"Request failed: {str(e)}"}
-#     except Exception as e:
-#         print(f"Unexpected error in jolt_user_id: {str(e)}")
-#         return {"error": f"Unexpected error: {str(e)}"}
-
-# @mcp.tool
-# def fitness_start_plan(
-#     userHandle: str,
-#     goal: str | None = None,
-#     startDate: str | None = None,
-# ):
-#     """
-#     Start a personalized fitness plan using OurSite run + meal data.
-#     Use when the user says things like:
-#     - "start a fitness plan", "make me a training plan", "new fitness program"
-#     - "meal + run plan", "set up a running plan"
-#     Inputs:
-#       - userHandle: the user's handle/ID on OurSite
-#       - goal (optional): e.g. "5K in 6 weeks", "lose 5 lb"
-#       - startDate (optional): ISO date (YYYY-MM-DD)
-#     Output: { planPreviewMd, nextAction, debug }
-#     """
-#     # Fetch from your website’s API (replace base + auth as needed)
-#     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
-#     headers = {"Authorization": f"Bearer {os.getenv('FITNESS_API_KEY','')}"}
-
-#     email  = requests.get(f"{base}/v1/email",  params={"user": "nr10+n1@williams.edu", "window": "90d"}, headers=headers, timeout=10).json()
-#     # meals = requests.get(f"{base}/v1/email", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
-
-#     # toy logic for a preview
-#     # weekly_miles = sum(r.get("miles", 0) for r in runs[-7:])
-#     # protein_avg  = round(sum(m.get("protein_g", 0) for m in meals[-7:]) / max(1, len(meals[-7:]))) if meals else 0
-
-#     # plan_md = (
-#     #     "### Week 1 (Base)\n"
-#     #     f"- 3 easy runs: 20–30 min (RPE 3–4);\n"
-#     #     "- 1 cross day: 30 min cycling or brisk walk\n"
-#     #     f"- Protein target: PROTIEN g/day\n"
-#     #     + (f"\n**Goal:** {goal}\n" if goal else "")
-#     # )
-
-#     return email
-
-# @mcp.tool
-# def whoami_link_account(pokeUserId: str, siteUserHandle: str):
-#     """
-#     Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
-#     Use when user says: "link my account", "use my site profile", etc.
-#     Inputs:
-#       - pokeUserId: Poke's stable user identifier
-#       - siteUserHandle: user's handle on OurSite
-#     """
-#     print(f"whoami_link_account called - pokeUserId: {pokeUserId}, siteUserHandle: {siteUserHandle}")
-    
-#     # Store mapping in your DB; here we simulate success
-#     result = {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
-#     print(f"Account linking successful: {result['msg']}")
-#     return result
-
+    """Print out a user's name."""
+    try:
+        if not name:
+            return "Error: Name is required"
+        return f"Hello, {name}! Welcome to our sample HTTP server running on Nikhil!"
+    except Exception as e:
+        logger.error(f"Error in print_name: {e}")
+        return f"Error processing name: {str(e)}"
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 8000))
-    host = "0.0.0.0"
-    
-    print(f"Starting FastMCP server on {host}:{port}")
-    
-    mcp.run(
-        transport="http",
-        host=host,
-        port=port
-    )
+    try:
+        port = int(os.environ.get("PORT", 8000))
+        host = os.environ.get("HOST", "0.0.0.0")
+        
+        logger.info(f"Starting FastMCP server on {host}:{port}")
+        
+        # Run with proper error handling
+        mcp.run(
+            transport="http",
+            host=host,
+            port=port
+        )
+        
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+        sys.exit(0)
+    except Exception as e:
+        logger.error(f"Failed to start server: {e}")
+        sys.exit(1)
