@@ -23,7 +23,12 @@ mcp = FastMCP("jolt-mcp")
 
 @mcp.tool(description="Print out a users api token.")
 def print_token(user_api_token: str) -> str:
-    return f"Hello, {user_api_token}! Welcome to our sample HTTP server running on Nikhil!"
+    return f"Hello, {user_api_token}! This is your api token!"
+    
+@mcp.tool(description="Print out a users name.")
+def print_name(name: str) -> str:
+    return f"Hello, {name}! Welcome to our sample HTTP server running on Nikhil!"
+
 
 # @mcp.tool
 # def jolt_user_id(bearerToken: str):
