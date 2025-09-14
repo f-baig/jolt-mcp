@@ -42,7 +42,7 @@ def fitness_start_plan(
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
     headers = {"Authorization": f"Bearer {os.getenv('FITNESS_API_KEY','')}"}
 
-    email  = requests.get(f"{base}/v1/email",  params={"user": userHandle, "window": "90d"}, timeout=10).json()
+    email  = requests.get(f"{base}/v1/email",  params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
     # meals = requests.get(f"{base}/v1/email", params={"user": userHandle, "window": "90d"}, headers=headers, timeout=10).json()
 
     # toy logic for a preview
