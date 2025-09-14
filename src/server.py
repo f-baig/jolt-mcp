@@ -37,35 +37,9 @@ def jolt_user_id(
     """
     Get information about the user's jolt ID.
     """
-    logger.info(f"jolt_user_id called with bearerToken: {bearerToken[:10]}...")
-    
     base = os.getenv("FITNESS_API_BASE", "https://jolt.nikhilrado.com/api")
-    logger.info(f"Using API base URL: {base}")
-    
-    headers = {"Authorization": f"Bearer {os.getenv(bearerToken,'')}"}
-    logger.info(f"Making request to {base}/v1/email")
-    
-    try:
-        response = requests.get(f"{base}/v1/email", headers=headers, timeout=10)
-        logger.info(f"API response status: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            logger.info(f"Successfully retrieved email data, response size: {len(str(data))} chars")
-            return data
-        else:
-            logger.error(f"API request failed with status {response.status_code}: {response.text}")
-            return {"error": f"API request failed with status {response.status_code}"}
-            
-    except requests.exceptions.Timeout:
-        logger.error("API request timed out after 10 seconds")
-        return {"error": "Request timed out"}
-    except requests.exceptions.RequestException as e:
-        logger.error(f"API request failed with exception: {str(e)}")
-        return {"error": f"Request failed: {str(e)}"}
-    except Exception as e:
-        logger.error(f"Unexpected error in jolt_user_id: {str(e)}")
-        return {"error": f"Unexpected error: {str(e)}"}
+    headers = {"Authorization": f"Bearer {bearerToken}"}
+    return requests.get(f"{base}/v1/email", headers=headers, timeout=10).json()
 
 # @mcp.tool
 # def fitness_start_plan(
@@ -107,19 +81,15 @@ def jolt_user_id(
 
 # @mcp.tool
 # def whoami_link_account(pokeUserId: str, siteUserHandle: str):
-#     """
-#     Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
-#     Use when user says: "link my account", "use my site profile", etc.
-#     Inputs:
-#       - pokeUserId: Poke's stable user identifier
-#       - siteUserHandle: user's handle on OurSite
-#     """
-#     logger.info(f"whoami_link_account called - pokeUserId: {pokeUserId}, siteUserHandle: {siteUserHandle}")
-    
-#     # Store mapping in your DB; here we simulate success
-#     result = {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
-#     logger.info(f"Account linking successful: {result['msg']}")
-#     return result
+    # """
+    # Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
+    # Use when user says: "link my account", "use my site profile", etc.
+    # Inputs:
+    #   - pokeUserId: Poke's stable user identifier
+    #   - siteUserHandle: user's handle on OurSite
+    # """
+    # # Store mapping in your DB; here we simulate success
+    # return {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
 
 
 
@@ -127,23 +97,10 @@ if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8000))
     host = "0.0.0.0"
     
-    logger.info("=" * 50)
-    logger.info("Starting Jolt MCP Server")
-    logger.info(f"Host: {host}")
-    logger.info(f"Port: {port}")
-    logger.info(f"Environment: {os.environ.get('ENVIRONMENT', 'development')}")
-    logger.info(f"API Base URL: {os.environ.get('FITNESS_API_BASE', 'https://jolt.nikhilrado.com/api')}")
-    logger.info("Available tools: jolt_user_id")
-    logger.info("=" * 50)
-    
     print(f"Starting FastMCP server on {host}:{port}")
     
-    try:
-        mcp.run(
-            transport="http",
-            host=host,
-            port=port
-        )
-    except Exception as e:
-        logger.error(f"Failed to start MCP server: {str(e)}")
-        raise
+    mcp.run(
+        transport="http",
+        host=host,
+        port=port
+    )
