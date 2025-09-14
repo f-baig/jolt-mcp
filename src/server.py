@@ -94,22 +94,21 @@ def jolt_user_id(bearerToken: str):
 
 #     return email
 
-@mcp.tool
-def whoami_link_account(pokeUserId: str, siteUserHandle: str):
-    """
-    Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
-    Use when user says: "link my account", "use my site profile", etc.
-    Inputs:
-      - pokeUserId: Poke's stable user identifier
-      - siteUserHandle: user's handle on OurSite
-    """
-    print(f"whoami_link_account called - pokeUserId: {pokeUserId}, siteUserHandle: {siteUserHandle}")
+# @mcp.tool
+# def whoami_link_account(pokeUserId: str, siteUserHandle: str):
+#     """
+#     Link the current Poke user to an OurSite user handle so future tools can omit userHandle.
+#     Use when user says: "link my account", "use my site profile", etc.
+#     Inputs:
+#       - pokeUserId: Poke's stable user identifier
+#       - siteUserHandle: user's handle on OurSite
+#     """
+#     print(f"whoami_link_account called - pokeUserId: {pokeUserId}, siteUserHandle: {siteUserHandle}")
     
-    # Store mapping in your DB; here we simulate success
-    result = {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
-    print(f"Account linking successful: {result['msg']}")
-    return result
-
+#     # Store mapping in your DB; here we simulate success
+#     result = {"ok": True, "msg": f"Linked {pokeUserId} → {siteUserHandle}"}
+#     print(f"Account linking successful: {result['msg']}")
+#     return result
 
 
 if __name__ == "__main__":
